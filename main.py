@@ -2,11 +2,13 @@ import tkinter as tk
 import os
 from PIL import Image, ImageTk
 
+
 class ImageViewer(tk.Tk):
     def __init__(self, folder):
         super().__init__()
         self.title("Image Viewer")
-        self.images = [os.path.join(folder, file) for file in os.listdir(folder) if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+        self.images = [os.path.join(folder, file) for file in os.listdir(folder) if
+                       file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
         self.current_index = 0
 
         self.label = tk.Label(self)
@@ -30,7 +32,7 @@ class ImageViewer(tk.Tk):
     def show_image(self):
         if 0 <= self.current_index < len(self.images):
             image = Image.open(self.images[self.current_index])
-            image = image.resize((400, 400), Image.BILINEAR)
+            image = image.resize((800, 800), Image.BILINEAR)
             photo = ImageTk.PhotoImage(image)
             self.label.config(image=photo)
             self.label.image = photo
@@ -52,6 +54,7 @@ class ImageViewer(tk.Tk):
         if self.current_index > 0:
             self.current_index -= 1
             self.show_image()
+
 
 if __name__ == "__main__":
     folder_path = "Images"
