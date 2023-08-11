@@ -1,6 +1,7 @@
 import tkinter as tk
 import os
 from PIL import Image, ImageTk
+import hashlib
 
 
 class ImageViewer(tk.Tk):
@@ -56,7 +57,19 @@ class ImageViewer(tk.Tk):
             self.show_image()
 
 
+def remove_duplicates(folder):
+    hashes = set()
+    for filename in os.listdir(folder):
+        path = os.path.join(folder, filename)
+        digest = hashlib.sha1(open(path, 'rb').read()).digest()
+        if digest not in hashes:
+            hashes.add(digest)
+        else:
+            os.remove(path)
+
+
 if __name__ == "__main__":
     folder_path = "Images"
+    remove_duplicates(folder_path)  # Remove duplicates first
     app = ImageViewer(folder_path)
     app.mainloop()
