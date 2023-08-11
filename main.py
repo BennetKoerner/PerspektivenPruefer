@@ -2,6 +2,7 @@ import tkinter as tk
 import os
 from PIL import Image, ImageTk
 import hashlib
+import imagehash
 
 
 class ImageViewer(tk.Tk):
@@ -57,19 +58,21 @@ class ImageViewer(tk.Tk):
             self.show_image()
 
 
-def remove_duplicates(folder):
-    hashes = set()
-    for filename in os.listdir(folder):
-        path = os.path.join(folder, filename)
-        digest = hashlib.sha1(open(path, 'rb').read()).digest()
-        if digest not in hashes:
-            hashes.add(digest)
-        else:
-            os.remove(path)
+def remove_similar_images(folder):
+    images = [os.path.join(folder, file) for file in os.listdir(folder) if
+               file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
 
+    hash_dict = {}
+    for image_path in images:
+        img = Image.open(image_path)
+        img_hash = imagehash.average_hash(img)
+        if img_hash in hash_dict:
+            os.remove(image_path)
+        else:
+            hash_dict[img_hash] = image_path
 
 if __name__ == "__main__":
     folder_path = "Images"
-    remove_duplicates(folder_path)  # Remove duplicates first
+    remove_similar_images(folder_path)
     app = ImageViewer(folder_path)
     app.mainloop()
